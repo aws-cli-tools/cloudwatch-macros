@@ -1,0 +1,86 @@
+[tool.poetry]
+name = "cloudwatch-macros"
+version = "0.1.0"
+description = ""
+authors = ["Efi Merdler-Kravitz <efi.merdler@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+cargo-lambda = "^0.22.0"
+ziglang = "^0.11.0"
+
+[tool.poe.env]
+DIR = "cw-macros"
+[tool.poe.tasks.lint]
+shell = """
+    CI="${CI:-false}"   
+    cd  $DIR
+    for dir in */ ; do
+        if [ -d "$dir" ] && [ -f "$dir/Cargo.toml" ]; then
+            cd "$dir"
+            
+            if [ "$CI" = "true" ]; then
+                cargo clippy --all-features
+            else
+                cargo clippy --all-features --fix --allow-dirty
+            fi		
+            cd ..
+        fi
+    done
+"""
+
+[tool.poe.tasks.format]
+shell = """
+    CI="${CI:-false}"   
+    cd  $DIR
+    for dir in */ ; do
+        if [ -d "$dir" ] && [ -f "$dir/Cargo.toml" ]; then
+            cd "$dir"
+            
+            if [ "$CI" = "true" ]; then
+                cargo fmt --all -- --check
+            else
+                cargo fmt --all
+            fi		
+            cd ..
+        fi
+    done
+"""
+
+[tool.poe.tasks.audit]
+shell = """
+    cd  $DIR
+    for dir in */ ; do
+        if [ -d "$dir" ] && [ -f "$dir/Cargo.toml" ]; then
+            cd "$dir"
+            cargo audit 		
+            cd ..
+        fi
+    done
+"""
+
+[tool.poe.tasks.test]
+shell = """
+    cd  $DIR
+    for dir in */ ; do
+        if [ -d "$dir" ] && [ -f "$dir/Cargo.toml" ]; then
+            cd "$dir"
+            cargo test 		
+            cd ..
+        fi
+    done
+"""
+
+
+[tool.poe.tasks.deploy]
+shell = """
+    cd $DIR && sam build && sam deploy
+"""
+
+[tool.poe.tasks] 
+gate = ["lint", "format", "test", "audit"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

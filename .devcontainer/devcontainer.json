@@ -8,7 +8,6 @@
         "ghcr.io/devcontainers/features/rust:1": {},
         "ghcr.io/customink/codespaces-features/sam-cli:1": {},
         "ghcr.io/devcontainers/features/node:1": {}
-
     },
     "mounts": [
         "source=projectname-bashhistory,target=/commandhistory,type=volume",
