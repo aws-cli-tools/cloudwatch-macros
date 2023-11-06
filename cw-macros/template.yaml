@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: CW macros that can be used by your SAM or CW template.
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+
+
+Resources:
+  UpperStringMacroFunction:
+    Type: AWS::Serverless::Function 
+    Metadata:
+      BuildMethod: rust-cargolambda 
+    Properties:
+      CodeUri: ./upper-string-macro   
+      Handler: bootstrap 
+      Runtime: provided.al2
+      Architectures:
+        - arm64
+  
+  UpperStringMacro:
+      Type: AWS::CloudFormation::Macro
+      Properties:
+        Name: Upper
+        FunctionName: !GetAtt UpperStringMacroFunction.Arn
+
+  LowerStringMacroFunction:
+    Type: AWS::Serverless::Function 
+    Metadata:
+      BuildMethod: rust-cargolambda 
+    Properties:
+      CodeUri: ./lower-string-macro   
+      Handler: bootstrap 
+      Runtime: provided.al2
+      Architectures:
+        - arm64
+  
+  LowerStringMacro:
+      Type: AWS::CloudFormation::Macro
+      Properties:
+        Name: Lower
+        FunctionName: !GetAtt LowerStringMacroFunction.Arn
+
+  MaxLengthMacroFunction:
+    Type: AWS::Serverless::Function 
+    Metadata:
+      BuildMethod: rust-cargolambda 
+    Properties:
+      CodeUri: ./max-length-macro   
+      Handler: bootstrap 
+      Runtime: provided.al2
+      Architectures:
+        - arm64
+  
+  MaxLengthMacro:
+      Type: AWS::CloudFormation::Macro
+      Properties:
+        Name: MaxLength
+        FunctionName: !GetAtt MaxLengthMacroFunction.Arn
+      
+
+  

@@ -1,0 +1,54 @@
+name: Code Gating
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    permissions:
+      id-token: write
+      contents: read
+      checks: write
+    runs-on: ubuntu-latest      
+    steps:
+      - uses: taiki-e/install-action@just
+      - uses: taiki-e/install-action@grcov
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::201893381538:role/GitHubRole
+          role-session-name: GitHubActionsSession
+      - uses: actions/checkout@v3
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: llvm-tools-preview, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - name: Set up Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry self add 'poethepoet[poetry_plugin]'
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+          cache: 'poetry'
+      - name: Install poe
+        run: | 
+          pipx install poethepoet
+      - name: Gate
+        run: poe gate
+
+   
+    
