@@ -38,3 +38,42 @@ async fn main() -> Result<(), Error> {
 
     run(service_fn(function_handler)).await
 }
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+
+    use super::*;
+    use serde_json::json;
+
+    // Mocks a LambdaEvent with given input string and length parameters.
+    fn mock_event(input: &str) -> LambdaEvent<CloudFormationMacroRequest> {
+        LambdaEvent {
+            payload: CloudFormationMacroRequest {
+                account_id: "123456789012".to_string(),
+                fragment: HashMap::new(),
+                transform_id: "testTransform".to_string(),
+                request_id: "testRequest".to_string(),
+                region: "us-east-1".to_string(),
+                params: {
+                    let mut h = HashMap::new();
+                    h.insert(INPUT_STRING_PARAM.to_string(), json!(input));
+                    h
+                },
+                template_parameter_values: HashMap::new(),
+            },
+            context: lambda_runtime::Context::default(),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_make_string_upper() {
+        let input_string = "Hello";
+        let event = mock_event(input_string);
+
+        let response = function_handler(event).await.unwrap();
+
+        assert_eq!(response.fragment, json!("HELLO"));
+    }
+
+}

@@ -59,13 +59,27 @@ shell = """
         fi
     done
 """
+
+[tool.poe.tasks.test]
+shell = """
+    cd  $DIR
+    for dir in */ ; do
+        if [ -d "$dir" ] && [ -f "$dir/Cargo.toml" ]; then
+            cd "$dir"
+            cargo test 		
+            cd ..
+        fi
+    done
+"""
+
+
 [tool.poe.tasks.deploy]
 shell = """
     cd $DIR && sam build && sam deploy
 """
 
 [tool.poe.tasks] 
-gate = ["lint", "format", "audit"]
+gate = ["lint", "format", "test", "audit"]
 
 [build-system]
 requires = ["poetry-core"]
