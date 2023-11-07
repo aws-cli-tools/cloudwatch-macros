@@ -75,5 +75,4 @@ mod tests {
 
         assert_eq!(response.fragment, json!("HELLO"));
     }
-
 }

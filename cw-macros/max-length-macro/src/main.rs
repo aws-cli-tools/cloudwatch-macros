@@ -23,12 +23,12 @@ async fn function_handler(
         .as_u64()
         .unwrap() as usize;
 
-        let result = if content.len() > length {
-            &content[0..length]
-        } else {
-            content
-        };
-    
+    let result = if content.len() > length {
+        &content[0..length]
+    } else {
+        content
+    };
+
     let resp = Response {
         request_id: event.payload.request_id,
         status: "success".to_string(),
@@ -50,7 +50,6 @@ async fn main() -> Result<(), Error> {
 
     run(service_fn(function_handler)).await
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -87,7 +86,7 @@ mod tests {
         let event = mock_event(input_string, length);
 
         let response = function_handler(event).await.unwrap();
-        
+
         assert_eq!(response.fragment, json!(input_string));
     }
 
@@ -98,7 +97,7 @@ mod tests {
         let event = mock_event(input_string, length);
 
         let response = function_handler(event).await.unwrap();
-        
+
         assert_eq!(response.fragment, json!("Hello"));
     }
 }

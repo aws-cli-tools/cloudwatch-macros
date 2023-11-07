@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "cloudwatch-macros"
 version = "0.1.0"
-description = ""
+description = "Collection of essential CloudFormation macros, effortlessly deployable via SAM."
 authors = ["Efi Merdler-Kravitz <efi.merdler@gmail.com>"]
 readme = "README.md"
 
@@ -14,12 +14,14 @@ ziglang = "^0.11.0"
 DIR = "cw-macros"
 [tool.poe.tasks.lint]
 shell = """
+    set -e
+    echo Lint
     CI="${CI:-false}"   
     cd  $DIR
     for dir in */ ; do
         if [ -d "$dir" ] && [ -f "$dir/Cargo.toml" ]; then
             cd "$dir"
-            
+            echo $dir
             if [ "$CI" = "true" ]; then
                 cargo clippy --all-features
             else
@@ -32,12 +34,14 @@ shell = """
 
 [tool.poe.tasks.format]
 shell = """
+    set -e
+    echo Format
     CI="${CI:-false}"   
     cd  $DIR
     for dir in */ ; do
         if [ -d "$dir" ] && [ -f "$dir/Cargo.toml" ]; then
             cd "$dir"
-            
+            echo $dir
             if [ "$CI" = "true" ]; then
                 cargo fmt --all -- --check
             else
@@ -50,10 +54,13 @@ shell = """
 
 [tool.poe.tasks.audit]
 shell = """
+    set -e
+    echo Audit
     cd  $DIR
     for dir in */ ; do
         if [ -d "$dir" ] && [ -f "$dir/Cargo.toml" ]; then
             cd "$dir"
+            echo $dir
             cargo audit 		
             cd ..
         fi
@@ -62,10 +69,13 @@ shell = """
 
 [tool.poe.tasks.test]
 shell = """
+    set -e
+    echo Test
     cd  $DIR
     for dir in */ ; do
         if [ -d "$dir" ] && [ -f "$dir/Cargo.toml" ]; then
             cd "$dir"
+            echo $dir
             cargo test 		
             cd ..
         fi

@@ -6,7 +6,8 @@
     "rust-analyzer.linkedProjects": [
         "cw-macros/upper-string-macro/Cargo.toml",
         "cw-macros/lower-string-macro/Cargo.toml",
-        "cw-macros/max-length-macro/Cargo.toml"
+        "cw-macros/max-length-macro/Cargo.toml",
+        "cw-macros/get-latest-layer-version-macro/Cargo.toml"
     ],
     "rust-analyzer.showUnlinkedFileNotification": false
 }
