@@ -59,6 +59,30 @@ Resources:
       Properties:
         Name: MaxLength
         FunctionName: !GetAtt MaxLengthMacroFunction.Arn
+
+  LatestLayerVersionMacroFunction:
+    Type: AWS::Serverless::Function 
+    Metadata:
+      BuildMethod: rust-cargolambda 
+    Properties:
+      CodeUri: ./get-latest-layer-version-macro
+      Handler: bootstrap 
+      Runtime: provided.al2
+      Architectures:
+        - arm64
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - lambda:ListLayerVersions
+              Resource: '*'
+  
+  LatestLayerVersionMacro:
+      Type: AWS::CloudFormation::Macro
+      Properties:
+        Name: LatestLayerVersion
+        FunctionName: !GetAtt LatestLayerVersionMacroFunction.Arn
       
 
   

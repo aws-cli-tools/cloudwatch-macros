@@ -39,7 +39,6 @@ async fn main() -> Result<(), Error> {
     run(service_fn(function_handler)).await
 }
 
-
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
@@ -76,5 +75,4 @@ mod tests {
 
         assert_eq!(response.fragment, json!("hello"));
     }
-
 }
