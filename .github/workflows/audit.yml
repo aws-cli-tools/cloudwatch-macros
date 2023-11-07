@@ -25,5 +25,17 @@ jobs:
           crate: cargo-audit
           version: latest
           use-tool-cache: true
-      - name: Audit
-        run: cargo audit
+      - name: Set up Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry self add 'poethepoet[poetry_plugin]'
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+          cache: 'poetry'
+      - name: Install poe
+        run: | 
+          pipx install poethepoet
+      - name: Gate
+        run: poe audit
